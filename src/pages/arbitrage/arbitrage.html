@@ -9,35 +9,29 @@
 
 <ion-content padding>
   <h3>Arbitrage</h3>
+    {{ lineChartData }}
 
-  <ion-grid>
+  <ion-grid *ngIf="lineChartData">
     <ion-row>
       <ion-col col-12>
+        here
         <div style="display: block;">
-          <canvas baseChart width="400" height="400"
-            [datasets]="lineChartData"
-            [labels]="lineChartLabels"
-            [options]="lineChartOptions"
-            [colors]="lineChartColors"
-            [legend]="lineChartLegend"
-            [chartType]="lineChartType"
-            (chartHover)="chartHovered($event)"
-            (chartClick)="chartClicked($event)">
-          </canvas>
+            <!--<canvas baseChart width="400" height="100"
+               [datasets]="lineChartData"
+               [labels]="lineChartLabels"
+               [options]="lineChartOptions"
+               [colors]="lineChartColors"
+               [legend]="lineChartLegend"
+               [chartType]="lineChartType"
+               (chartHover)="chartHovered($event)"
+               (chartClick)="chartClicked($event)">
+            </canvas>-->
         </div>
       </ion-col>
-    <!--  <ion-col col-6>
-        <table class="table table-responsive table-condensed">
-          <tr>
-            <th *ngFor="let label of lineChartLabels">{{label}}</th>
-          </tr>
-          <tr *ngFor="let d of lineChartData">
-            <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
-          </tr>
-        </table>
-      </ion-col>-->
     </ion-row>
   </ion-grid>
+
+
 
 
 </ion-content>

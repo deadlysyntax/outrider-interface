@@ -9,28 +9,23 @@ import moment from 'moment'
 })
 export class ArbitragePage {
 
-  chartData: any
+  chartData:       any          = []
+  lineChartData:   Array<any>   = []
+  lineChartLabels: Array<any>   = []
 
   constructor(public navCtrl: NavController) {
-
+    this.navCtrl = navCtrl
   }
 
   ngOnInit() {
-    EngineAPI.arbitrageData().subscribe( data => {
-      this.chartData = this.processArbitrageData(data)
-      console.log(this.chartData)
-    })
+    this.getGraphData()
   }
 
-  public lineChartData:Array<any>   = [
-    { data: this.chartData.map( result => result.high ), label: 'Opportunities'},
-  ];
-  public lineChartLabels:Array<any> = this.chartData.map( result => result.time )
-
-  public lineChartOptions:any       = {
+  lineChartOptions:any       = {
     responsive: true
   }
-  public lineChartColors:Array<any> = [
+
+  lineChartColors:Array<any> = [
     { // grey
       backgroundColor:           'rgba(148,159,177,0.2)',
       borderColor:               'rgba(148,159,177,1)',
@@ -38,65 +33,57 @@ export class ArbitragePage {
       pointBorderColor:          '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor:     'rgba(148,159,177,0.8)'
-    }/*,
-    { // dark grey
-      backgroundColor:           'rgba(77,83,96,0.2)',
-      borderColor:               'rgba(77,83,96,1)',
-      pointBackgroundColor:      'rgba(77,83,96,1)',
-      pointBorderColor:          '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor:     'rgba(77,83,96,1)'
-    },
-    { // grey
-      backgroundColor:           'rgba(148,159,177,0.2)',
-      borderColor:               'rgba(148,159,177,1)',
-      pointBackgroundColor:      'rgba(148,159,177,1)',
-      pointBorderColor:          '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor:     'rgba(148,159,177,0.8)'
-    }*/
+    }
   ]
-  public lineChartLegend:boolean = true;
-  public lineChartType:string    = 'line';
+  lineChartLegend:boolean = true
+  lineChartType:string    = 'line'
+
+
+  getGraphData(): void {
+    EngineAPI.arbitrageData().subscribe( data => {
+      this.chartData = this.processArbitrageData(data)
+      //
+      this.lineChartData  = [
+        { data: this.chartData.map( result => result.high ), label: 'Opportunities' }
+      ]
+      //
+      this.lineChartLabels = this.chartData.map( result => result.time )
+    })
+  }
 
 
 
   // events
-  public chartClicked(e:any):void {
+  chartClicked(e:any):void {
     console.log(e);
   }
 
-  public chartHovered(e:any):void {
+  chartHovered(e:any):void {
     console.log(e);
   }
 
 
-
-  public processArbitrageData(data) {
-    //let processedData = []
-
-    return data.reduce( ( result, opportunity ) => {
+  // Format the data in how we want our chart to recieve it
+  processArbitrageData(data) {
+    let processedData = []
+    //
+    let compiledData = data.reduce( ( result, opportunity ) => {
       // Convert the data into js
       let data = JSON.parse(opportunity.data)
-
-      //console.log(data)
-
-      let time = moment(opportunity.timestamp, 'YYYY-MM-DD H:m:s').format('YYYY-MM-DD HH:m')
-
-      //console.log(time, 'converted')
-
+      // We use the date/time as our label
+      let time = moment(opportunity.timestamp, 'YYYY-MM-DD H:m:s').format('YYYY-MM-DD HH:mm')
+      // Create a fresh one other wise we're manipulating the previous iteration of the reducer
       if ( ! result[time] ) result[time] = { time, high: 0 }  // Create new group
-
-      //console.log(result)
+      // Add the high for this time span
       if( data.arbitrageCalculations.profitLoss > result[time].high )
         result[time].high = data.arbitrageCalculations.profitLoss
-
-      //result[time].activity.push( { data } ) // Append to group
-
-      //console.log(result)
       return result
     }, {} )
-
+    //
+    for( let key in compiledData )
+      processedData.push(compiledData[key])
+    //
+    return processedData
   }
 
 }
