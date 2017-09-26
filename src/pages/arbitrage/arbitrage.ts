@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit, ChangeDetectorRef} from '@angular/core'
 import { NavController } from 'ionic-angular'
 import { engineAPI as EngineAPI } from '../../services/engineAPI'
 import moment from 'moment'
@@ -7,25 +7,30 @@ import moment from 'moment'
   selector:    'page-arbitrage',
   templateUrl: 'arbitrage.html'
 })
-export class ArbitragePage {
+export class ArbitragePage implements OnInit {
 
-  chartData:       any          = []
-  lineChartData:   Array<any>   = []
-  lineChartLabels: Array<any>   = []
+  public chartData:       any        = []
+  public lineChartData:   Array<any> = []
+  public lineChartLabels: Array<any> = []
 
-  constructor(public navCtrl: NavController) {
-    this.navCtrl = navCtrl
+
+
+  constructor(public navCtrl: NavController, private ref: ChangeDetectorRef) {
   }
+
+
 
   ngOnInit() {
     this.getGraphData()
   }
 
-  lineChartOptions:any       = {
+
+
+  public lineChartOptions:any       = {
     responsive: true
   }
 
-  lineChartColors:Array<any> = [
+  public lineChartColors:Array<any> = [
     { // grey
       backgroundColor:           'rgba(148,159,177,0.2)',
       borderColor:               'rgba(148,159,177,1)',
@@ -35,19 +40,25 @@ export class ArbitragePage {
       pointHoverBorderColor:     'rgba(148,159,177,0.8)'
     }
   ]
-  lineChartLegend:boolean = true
-  lineChartType:string    = 'line'
+  public lineChartLegend:boolean = true
+  public lineChartType:string    = 'line'
+
+
 
 
   getGraphData(): void {
+    //
     EngineAPI.arbitrageData().subscribe( data => {
       this.chartData = this.processArbitrageData(data)
-      //
-      this.lineChartData  = [
+      // Chart Data
+      this.lineChartData.push(
         { data: this.chartData.map( result => result.high ), label: 'Opportunities' }
-      ]
-      //
-      this.lineChartLabels = this.chartData.map( result => result.time )
+      )
+      // Chart Labels
+      this.lineChartLabels = this.chartData.map( result => {
+        return result.time
+      })
+      this.ref.detectChanges()
     })
   }
 
