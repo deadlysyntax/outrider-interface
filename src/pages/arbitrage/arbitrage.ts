@@ -22,7 +22,7 @@ export class ArbitragePage implements OnInit {
 
   ngOnInit() {
     this.getGraphData()
-    let x = setTimeout(this.getGraphData.bind(this), 20000)
+    let x = setInterval(this.getGraphData.bind(this), 20000)
   }
 
 
@@ -52,9 +52,9 @@ export class ArbitragePage implements OnInit {
     EngineAPI.arbitrageData().subscribe( data => {
       this.chartData = this.processArbitrageData(data)
       // Chart Data
-      this.lineChartData.push(
+      this.lineChartData = [
         { data: this.chartData.map( result => result.high ), label: 'Opportunities' }
-      )
+      ]
       // Chart Labels
       this.lineChartLabels = this.chartData.map( result => {
         return result.time
