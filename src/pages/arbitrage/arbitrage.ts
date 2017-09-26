@@ -22,6 +22,7 @@ export class ArbitragePage implements OnInit {
 
   ngOnInit() {
     this.getGraphData()
+    let x = setTimeout(this.getGraphData.bind(this), 20000)
   }
 
 
