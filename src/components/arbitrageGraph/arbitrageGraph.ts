@@ -1,13 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef} from '@angular/core'
 import { NavController } from 'ionic-angular'
-import { engineAPI as EngineAPI } from '../../services/engineAPI'
-import moment from 'moment'
+import { EngineAPI } from '../../services/engineAPI'
+//import moment from 'moment'
 
 @Component({
-  selector:    'page-arbitrage',
-  templateUrl: 'arbitrage.html'
+  selector:    'arbitrage-graph',
+  templateUrl: 'arbitrageGraph.html'
 })
-export class ArbitragePage implements OnInit {
+export class ArbitrageGraph implements OnInit {
 
   public chartData:       any        = []
   public lineChartData:   Array<any> = []
@@ -15,20 +15,20 @@ export class ArbitragePage implements OnInit {
 
 
 
-  constructor(public navCtrl: NavController, private ref: ChangeDetectorRef) {
-  }
+  constructor(public navCtrl: NavController, private ref: ChangeDetectorRef, private engineAPI: EngineAPI ) {}
 
 
 
   ngOnInit() {
     this.getGraphData()
-    let x = setInterval(this.getGraphData.bind(this), 20000)
+    setInterval(this.getGraphData.bind(this), 20000)
   }
 
 
 
   public lineChartOptions:any       = {
-    responsive: true
+    responsive: true,
+    borderWidth: 1
   }
 
   public lineChartColors:Array<any> = [
@@ -36,6 +36,14 @@ export class ArbitragePage implements OnInit {
       backgroundColor:           'rgba(148,159,177,0.2)',
       borderColor:               'rgba(148,159,177,1)',
       pointBackgroundColor:      'rgba(148,159,177,1)',
+      pointBorderColor:          '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor:     'rgba(148,159,177,0.8)'
+    },
+    { // grey
+      backgroundColor:           'rgba(108,59,77,0.2)',
+      borderColor:               'rgba(108,59,77,1)',
+      pointBackgroundColor:      'rgba(28,129,127,1)',
       pointBorderColor:          '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor:     'rgba(148,159,177,0.8)'
@@ -49,16 +57,17 @@ export class ArbitragePage implements OnInit {
 
   getGraphData(): void {
     //
-    EngineAPI.arbitrageData().subscribe( data => {
-      this.chartData = this.processArbitrageData(data)
+    this.engineAPI.arbitrageData().subscribe( data => {
+      this.chartData = data //this.processArbitrageData(data)
       // Chart Data
       this.lineChartData = [
-        { data: this.chartData.map( result => result.high ), label: 'Opportunities' }
+        { data: this.chartData.map( result => result.high ).reverse(), label: 'Profit High' },
+        { data: this.chartData.map( result => result.low ).reverse(), label: 'Profit Low' }
       ]
       // Chart Labels
       this.lineChartLabels = this.chartData.map( result => {
         return result.time
-      })
+      }).reverse()
       this.ref.detectChanges()
     })
   }
@@ -74,7 +83,7 @@ export class ArbitragePage implements OnInit {
     console.log(e);
   }
 
-
+/*
   // Format the data in how we want our chart to recieve it
   processArbitrageData(data) {
     let processedData = []
@@ -83,12 +92,18 @@ export class ArbitragePage implements OnInit {
       // Convert the data into js
       let data = JSON.parse(opportunity.data)
       // We use the date/time as our label
-      let time = moment(opportunity.timestamp, 'YYYY-MM-DD H:m:s').format('YYYY-MM-DD HH:mm')
+      let time = moment(opportunity.timestamp, 'YYYY-MM-DD H:m:s').format('YYYY-MM-DD HH')
       // Create a fresh one other wise we're manipulating the previous iteration of the reducer
-      if ( ! result[time] ) result[time] = { time, high: 0 }  // Create new group
+      if ( ! result[time] ) result[time] = { time, high: data.arbitrageCalculations.profitLoss, low: data.arbitrageCalculations.profitLoss}  // Create new group, start the low at the first point
       // Add the high for this time span
       if( data.arbitrageCalculations.profitLoss > result[time].high )
         result[time].high = data.arbitrageCalculations.profitLoss
+
+
+      if( data.arbitrageCalculations.profitLoss < result[time].low )
+        result[time].low = data.arbitrageCalculations.profitLoss
+
+
       return result
     }, {} )
     //
@@ -97,5 +112,6 @@ export class ArbitragePage implements OnInit {
     //
     return processedData
   }
+  */
 
 }

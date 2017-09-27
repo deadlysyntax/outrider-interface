@@ -4,7 +4,11 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular'
 import { ChartsModule } from 'ng2-charts'
 
 import { MyApp } from './app.component'
-import { ArbitragePage } from '../pages/arbitrage/arbitrage'
+import { DashboardPage } from '../pages/dashboard/dashboard'
+import { ArbitrageGraph } from '../components/arbitrageGraph/arbitrageGraph'
+import { ArbitrageData } from '../components/arbitrageData/arbitrageData'
+
+import { EngineAPI } from '../services/engineAPI'
 
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
@@ -12,7 +16,9 @@ import { SplashScreen } from '@ionic-native/splash-screen'
 @NgModule({
   declarations: [
     MyApp,
-    ArbitragePage
+    DashboardPage,
+    ArbitrageGraph,
+    ArbitrageData
   ],
   imports: [
     BrowserModule,
@@ -22,12 +28,13 @@ import { SplashScreen } from '@ionic-native/splash-screen'
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    ArbitragePage
+    DashboardPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    EngineAPI
   ]
 })
 export class AppModule {}
