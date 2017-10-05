@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { ErrorHandler, NgModule } from '@angular/core'
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular'
 import { ChartsModule } from 'ng2-charts'
+import { NvD3Module } from 'ng2-nvd3'
 
 import { MyApp } from './app.component'
 import { DashboardPage } from '../pages/dashboard/dashboard'
@@ -23,7 +24,8 @@ import { SplashScreen } from '@ionic-native/splash-screen'
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    ChartsModule
+    ChartsModule,
+    NvD3Module
   ],
   bootstrap: [IonicApp],
   entryComponents: [

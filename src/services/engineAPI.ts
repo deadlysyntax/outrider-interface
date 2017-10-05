@@ -43,6 +43,21 @@ export class EngineAPI {
 
 
 
+  getArbitrageByHour(data): any {
+    let options = {
+      method:  'POST',
+      body:    data,
+      uri:     `${this.baseURL}/arbitrage/hourly`,
+      headers: {
+        'User-Agent': 'Request-Promise'
+      },
+      json: true
+    };
+    return request(options)
+  }
+
+
+
 
   public arbitrageData(): Observable<any> {
     return Observable
@@ -58,6 +73,15 @@ export class EngineAPI {
     return Observable
     .fromPromise(
       this.getArbitrageLatest()
+    )
+  }
+
+
+
+  public getByHour(data): Observable<any> {
+    return Observable
+    .fromPromise(
+      this.getArbitrageByHour(data)
     )
   }
 

@@ -1,37 +1,45 @@
-import { Component, OnInit, ChangeDetectorRef} from '@angular/core'
+import { Component, OnInit, ChangeDetectorRef, ViewEncapsulation} from '@angular/core'
 import { NavController } from 'ionic-angular'
 import { EngineAPI } from '../../services/engineAPI'
 //import moment from 'moment'
 
+
+
+export interface opportunityGraphInterface {
+  time: string;
+  high: number;
+  low:  number;
+}
+
+
+export interface hourlyOpportunityGraphInterface {
+  time: string;
+}
+
+
+
+
+
 @Component({
   selector:    'arbitrage-graph',
-  templateUrl: 'arbitrageGraph.html'
+  templateUrl: 'arbitrageGraph.html',
+  //styleUrls: [
+  //  '../../../node_modules/nvd3/build/nv.d3.css'
+  //],
+  encapsulation: ViewEncapsulation.None
 })
 export class ArbitrageGraph implements OnInit {
+
+
 
   public chartData:       any        = []
   public lineChartData:   Array<any> = []
   public lineChartLabels: Array<any> = []
-
-
-
-  constructor(public navCtrl: NavController, private ref: ChangeDetectorRef, private engineAPI: EngineAPI ) {}
-
-
-
-  ngOnInit() {
-    this.getGraphData()
-    setInterval(this.getGraphData.bind(this), 20000)
-  }
-
-
-
-  public lineChartOptions:any       = {
+  public lineChartOptions:any        = {
     responsive: true,
     borderWidth: 1
   }
-
-  public lineChartColors:Array<any> = [
+  public lineChartColors:Array<any>  = [
     { // grey
       backgroundColor:           'rgba(148,159,177,0.2)',
       borderColor:               'rgba(148,159,177,1)',
@@ -49,8 +57,23 @@ export class ArbitrageGraph implements OnInit {
       pointHoverBorderColor:     'rgba(148,159,177,0.8)'
     }
   ]
-  public lineChartLegend:boolean = true
-  public lineChartType:string    = 'line'
+  public lineChartLegend:boolean  = true
+  public lineChartType:string     = 'line'
+
+
+
+
+
+  constructor( public navCtrl: NavController, private ref: ChangeDetectorRef, private engineAPI: EngineAPI ) {}
+
+
+  ngOnInit() {
+    this.getGraphData()
+    setInterval(this.getGraphData.bind(this), 20000)
+  }
+
+
+
 
 
 
@@ -58,16 +81,16 @@ export class ArbitrageGraph implements OnInit {
   getGraphData(): void {
     //
     this.engineAPI.arbitrageData().subscribe( data => {
-      this.chartData = data //this.processArbitrageData(data)
+      this.chartData = data.reverse() //this.processArbitrageData(data)
       // Chart Data
       this.lineChartData = [
-        { data: this.chartData.map( result => result.high ).reverse(), label: 'Profit High' },
-        { data: this.chartData.map( result => result.low ).reverse(), label: 'Profit Low' }
+        { data: this.chartData.map( result => result.high ), label: 'Profit High' },
+      //  { data: this.chartData.map( result => result.low ).reverse(), label: 'Profit Low' }
       ]
       // Chart Labels
       this.lineChartLabels = this.chartData.map( result => {
         return result.time
-      }).reverse()
+      })
       this.ref.detectChanges()
     })
   }
@@ -75,43 +98,19 @@ export class ArbitrageGraph implements OnInit {
 
 
   // events
-  chartClicked(e:any):void {
-    console.log(e);
+  chartClicked(event:any):void {
+    this.showHourlyGraph(this.chartData[event.active[0]._index])
   }
 
-  chartHovered(e:any):void {
-    console.log(e);
+
+
+  showHourlyGraph( data: opportunityGraphInterface ): void {
+    this.engineAPI.getByHour(data).subscribe( response => {
+      console.log(response)
+    })
   }
 
-/*
-  // Format the data in how we want our chart to recieve it
-  processArbitrageData(data) {
-    let processedData = []
-    //
-    let compiledData = data.reduce( ( result, opportunity ) => {
-      // Convert the data into js
-      let data = JSON.parse(opportunity.data)
-      // We use the date/time as our label
-      let time = moment(opportunity.timestamp, 'YYYY-MM-DD H:m:s').format('YYYY-MM-DD HH')
-      // Create a fresh one other wise we're manipulating the previous iteration of the reducer
-      if ( ! result[time] ) result[time] = { time, high: data.arbitrageCalculations.profitLoss, low: data.arbitrageCalculations.profitLoss}  // Create new group, start the low at the first point
-      // Add the high for this time span
-      if( data.arbitrageCalculations.profitLoss > result[time].high )
-        result[time].high = data.arbitrageCalculations.profitLoss
 
 
-      if( data.arbitrageCalculations.profitLoss < result[time].low )
-        result[time].low = data.arbitrageCalculations.profitLoss
-
-
-      return result
-    }, {} )
-    //
-    for( let key in compiledData )
-      processedData.push(compiledData[key])
-    //
-    return processedData
-  }
-  */
 
 }

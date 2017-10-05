@@ -17,7 +17,7 @@ export class ArbitrageData implements OnInit {
 
   ngOnInit() {
     this.getData()
-    setInterval(this.getData.bind(this), 5000)
+    let x = setInterval(this.getData.bind(this), 5000)
   }
 
 
@@ -26,7 +26,7 @@ export class ArbitrageData implements OnInit {
   getData(){
     this.engineAPI.getLatest().subscribe( response => {
       this.latest = {
-        timestamp: moment(response[0].timestamp, 'YYYY-MM-DD H:m:s').format('HH:m:s DD/MM/YYYY'),
+        timestamp: moment(response[0].timestamp, 'YYYY-MM-DD H:m:s').format('HH:mm:ss DD/MM/YYYY'),
         data:      JSON.parse(response[0].data)
       }
       this.ref.detectChanges()
