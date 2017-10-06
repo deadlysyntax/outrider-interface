@@ -26,12 +26,12 @@
     <ion-row *ngIf="hourlyChart">
       <ion-col col-8>
         <h3>Hourly Data for {{ hourToDisplay }}</h3>
-        <arbitrage-hourly-graph [data]="hourlyChart"></arbitrage-hourly-graph>
+        <arbitrage-hourly-graph (onOpportunityClicked)="selectSingleOpportunity($event)" [data]="hourlyChart"></arbitrage-hourly-graph>
       </ion-col>
       <ion-col col-4>
-        <div *ngIf="opportunityData">
+        <div *ngIf="singleOpportunity">
           <h3>Profitable Opportunity</h3>
-          <opportunity-data [opportunity]="opportunityData"></opportunity-data>
+          <opportunity-data [opportunity]="singleOpportunity"></opportunity-data>
         </div>
       </ion-col>
     </ion-row>
