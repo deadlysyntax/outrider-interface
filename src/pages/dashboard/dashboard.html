@@ -11,15 +11,31 @@
 
 <ion-content>
   <ion-grid>
+
     <ion-row>
       <ion-col col-8>
         <h3>Historical Opportunities</h3>
-        <arbitrage-graph></arbitrage-graph>
+        <arbitrage-graph (onHourClicked)="selectHourlyCharts($event)"></arbitrage-graph>
       </ion-col>
       <ion-col col-4>
         <h3>Latest</h3>
         <arbitrage-data></arbitrage-data>
       </ion-col>
     </ion-row>
+
+    <ion-row *ngIf="hourlyChart">
+      <ion-col col-8>
+        <h3>Hourly Data for {{ hourToDisplay }}</h3>
+        <arbitrage-hourly-graph [data]="hourlyChart"></arbitrage-hourly-graph>
+      </ion-col>
+      <ion-col col-4>
+        <div *ngIf="opportunityData">
+          <h3>Profitable Opportunity</h3>
+          <opportunity-data [opportunity]="opportunityData"></opportunity-data>
+        </div>
+      </ion-col>
+    </ion-row>
+
+
   </ion-grid>
 </ion-content>

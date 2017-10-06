@@ -1,71 +1,31 @@
-import { Component, OnInit, ChangeDetectorRef, ViewEncapsulation} from '@angular/core'
+import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter} from '@angular/core'
 import { NavController } from 'ionic-angular'
-import { EngineAPI } from '../../services/engineAPI'
-import * as moment from 'moment-timezone'
-
-
-
-export interface opportunityGraphInterface {
-  time: string;
-  high: number;
-  low:  number;
-}
-
-
-export interface hourlyOpportunityGraphInterface {
-  time: string;
-}
+import { EngineAPI } from '../../services/engineAPI.service'
+import { GraphOptions } from '../../services/graphOptions.service'
+//import * as moment from 'moment-timezone'
 
 
 @Component({
   selector:    'arbitrage-graph',
   templateUrl: 'arbitrageGraph.html',
-  //styleUrls: [
-  //  '../../../node_modules/nvd3/build/nv.d3.css'
-  //],
-  encapsulation: ViewEncapsulation.None
+//  encapsulation: ViewEncapsulation.None
 })
 export class ArbitrageGraph implements OnInit {
-
-
 
   public chartData:       any        = []
   public lineChartData:   Array<any> = []
   public lineChartLabels: Array<any> = []
-  public lineChartOptions:any        = {
-    responsive: true,
-    borderWidth: 1
+
+  graphOptions: any;
+
+  constructor( public navCtrl: NavController, private ref: ChangeDetectorRef, private engineAPI: EngineAPI) {
+    this.graphOptions = GraphOptions.options
   }
-  public lineChartColors:Array<any>  = [
-    { // grey
-      backgroundColor:           'rgba(148,159,177,0.2)',
-      borderColor:               'rgba(148,159,177,1)',
-      pointBackgroundColor:      'rgba(148,159,177,1)',
-      pointBorderColor:          '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor:     'rgba(148,159,177,0.8)'
-    },
-    { // grey
-      backgroundColor:           'rgba(108,59,77,0.2)',
-      borderColor:               'rgba(108,59,77,1)',
-      pointBackgroundColor:      'rgba(28,129,127,1)',
-      pointBorderColor:          '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor:     'rgba(148,159,177,0.8)'
-    }
-  ]
-  public lineChartLegend:boolean  = true
-  public lineChartType:string     = 'line'
 
 
-  public displayHourlyGraph:    boolean     = false
-  public hourToDisplay:         string      = ''
-  public hourlyChartData:       Array<any>  = []
-  public hourlyLineChartData:   Array<any>  = []
-  public hourlyLineChartLabels: Array<any>  = []
+  @Output()
+  onHourClicked = new EventEmitter<any>()
 
-
-  constructor( public navCtrl: NavController, private ref: ChangeDetectorRef, private engineAPI: EngineAPI ) {}
 
 
   ngOnInit() {
@@ -103,36 +63,10 @@ export class ArbitrageGraph implements OnInit {
 
   // events
   chartClicked(event:any):void {
-    this.showHourlyGraph(this.chartData[event.active[0]._index])
+    this.onHourClicked.emit(this.chartData[event.active[0]._index])
   }
 
 
-
-
-
-
-
-  showHourlyGraph( data: opportunityGraphInterface ): void {
-    this.engineAPI.getByHour(data).subscribe( response => {
-      this.hourlyChartData = response
-
-      // Chart Data
-      this.hourlyLineChartData = [
-        { data: this.hourlyChartData.map( result => {
-          return result.data[0].arbitrageCalculations.profitLoss
-        }),
-        label: 'Profit' }
-      ]
-      // Chart Labels
-      this.hourlyLineChartLabels = this.hourlyChartData.map( result => {
-        return result.time
-      })
-      this.displayHourlyGraph = true
-      this.hourToDisplay      = moment(data.time, 'YYYY-MM-DD HH').tz('Australia/Melbourne').format('HH:00a DD/MM/YYYY')
-      this.ref.detectChanges()
-
-    })
-  }
 
 
 

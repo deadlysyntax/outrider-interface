@@ -8,8 +8,13 @@ import { MyApp } from './app.component'
 import { DashboardPage } from '../pages/dashboard/dashboard'
 import { ArbitrageGraph } from '../components/arbitrageGraph/arbitrageGraph'
 import { ArbitrageData } from '../components/arbitrageData/arbitrageData'
+import { ArbitrageHourlyGraph } from '../components/arbitrageHourlyGraph/arbitrageHourlyGraph'
+import OpportunityData from '../components/presentation/opportunityData/opportunityData'
 
-import { EngineAPI } from '../services/engineAPI'
+import { EngineAPI } from '../services/engineAPI.service'
+import { GraphOptions }  from '../services/graphOptions.service'
+
+
 
 import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
@@ -19,7 +24,9 @@ import { SplashScreen } from '@ionic-native/splash-screen'
     MyApp,
     DashboardPage,
     ArbitrageGraph,
-    ArbitrageData
+    ArbitrageData,
+    OpportunityData,
+    ArbitrageHourlyGraph
   ],
   imports: [
     BrowserModule,
