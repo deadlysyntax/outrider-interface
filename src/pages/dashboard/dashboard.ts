@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core'
 import { NavController } from 'ionic-angular'
 import * as moment from 'moment-timezone'
 
@@ -8,7 +8,7 @@ import * as moment from 'moment-timezone'
   selector:    'page-dashboard',
   templateUrl: 'dashboard.html'
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
 
   public hourlyChart:       any    = null
   public singleOpportunity: any    = null
@@ -22,6 +22,10 @@ export class DashboardPage implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  ngOnDestroy() {
+    this.ref.detach()
   }
 
 

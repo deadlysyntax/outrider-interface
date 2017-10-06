@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter} from '@angular/core'
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, Output, EventEmitter} from '@angular/core'
 import { NavController } from 'ionic-angular'
 import { EngineAPI } from '../../services/engineAPI.service'
 import { GraphOptions } from '../../services/graphOptions.service'
@@ -10,13 +10,15 @@ import { GraphOptions } from '../../services/graphOptions.service'
   templateUrl: 'arbitrageGraph.html',
 //  encapsulation: ViewEncapsulation.None
 })
-export class ArbitrageGraph implements OnInit {
+export class ArbitrageGraph implements OnInit, OnDestroy {
 
   public chartData:       any        = []
   public lineChartData:   Array<any> = []
   public lineChartLabels: Array<any> = []
 
-  graphOptions: any;
+  graphOptions: any
+  subscription: any
+  interval:     any
 
   constructor( public navCtrl: NavController, private ref: ChangeDetectorRef, private engineAPI: EngineAPI) {
     this.graphOptions = GraphOptions.options
@@ -30,9 +32,14 @@ export class ArbitrageGraph implements OnInit {
 
   ngOnInit() {
     this.getGraphData()
-    setInterval(this.getGraphData.bind(this), 20000)
+    this.interval = setInterval(this.getGraphData.bind(this), 20000)
   }
 
+  ngOnDestroy() {
+    this.ref.detach()
+    this.subscription.unsubscribe()
+    clearInterval(this.interval)
+  }
 
 
 
@@ -41,7 +48,7 @@ export class ArbitrageGraph implements OnInit {
 
   getGraphData(): void {
     //
-    this.engineAPI.arbitrageData().subscribe( data => {
+    this.subscription = this.engineAPI.arbitrageData().subscribe( data => {
       this.chartData = data.reverse() //this.processArbitrageData(data)
       // Chart Data
       this.lineChartData = [

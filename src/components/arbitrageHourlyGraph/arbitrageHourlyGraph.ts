@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, Input, Output, OnChanges, SimpleChange, EventEmitter } from '@angular/core'
+import { Component, ChangeDetectorRef, Input, Output, OnChanges, OnDestroy, SimpleChange, EventEmitter } from '@angular/core'
 import { NavController } from 'ionic-angular'
 import { EngineAPI } from '../../services/engineAPI.service'
 import * as moment from 'moment-timezone'
@@ -22,11 +22,11 @@ export interface hourlyOpportunityGraphInterface {
   selector:    'arbitrage-hourly-graph',
   templateUrl: 'arbitrageHourlyGraph.html',
 })
-export class ArbitrageHourlyGraph implements OnChanges {
+export class ArbitrageHourlyGraph implements OnChanges, OnDestroy {
 
 
   graphOptions: any
-
+  subscription: any
 
   public displayHourlyGraph:    boolean     = false
   public hourToDisplay:         string      = ''
@@ -48,7 +48,10 @@ export class ArbitrageHourlyGraph implements OnChanges {
 
 
 
-
+  ngOnDestroy() {
+    this.ref.detach()
+    this.subscription.unsubscribe()
+  }
 
   ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
     this.showHourlyGraph(this.data)
@@ -59,7 +62,7 @@ export class ArbitrageHourlyGraph implements OnChanges {
 
 
   showHourlyGraph( data: opportunityGraphInterface ): void {
-    this.engineAPI.getByHour(data).subscribe( response => {
+    this.subscription = this.engineAPI.getByHour(data).subscribe( response => {
       this.hourlyChartData = response
       // Chart Data
       this.hourlyLineChartData = [
@@ -81,7 +84,8 @@ export class ArbitrageHourlyGraph implements OnChanges {
 
 
   singleOpportunityClicked( event:any ):void {
-    this.onOpportunityClicked.emit(this.hourlyChartData[event.active[0]._index])
+    if( typeof event !== 'undefined' && typeof event.active !== 'undefined' && typeof event.active[0] !== 'undefined' )
+      this.onOpportunityClicked.emit(this.hourlyChartData[event.active[0]._index])
   }
 
 
