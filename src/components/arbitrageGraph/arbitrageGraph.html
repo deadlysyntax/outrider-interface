@@ -11,3 +11,19 @@
        (chartClick)="chartClicked($event)">
     </canvas>
 </div>
+
+
+<div style="display: block;" *ngIf="displayHourlyGraph && hourlyLineChartData.length > 0">
+  <h3>Hourly Data for {{ hourToDisplay }}</h3>
+  <!-- <nvd3 [options]="options" [data]="data"></nvd3>-->
+  <canvas baseChart height="100"
+       [datasets]="hourlyLineChartData"
+       [labels]="hourlyLineChartLabels"
+       [options]="lineChartOptions"
+       [colors]="lineChartColors"
+       [legend]="lineChartLegend"
+       [chartType]="lineChartType"
+       (chartHover)="chartHovered($event)"
+       (chartClick)="hourlyChartClicked($event)">
+    </canvas>
+</div>
