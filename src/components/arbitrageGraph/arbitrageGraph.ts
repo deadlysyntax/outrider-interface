@@ -70,7 +70,8 @@ export class ArbitrageGraph implements OnInit, OnDestroy {
 
   // events
   chartClicked(event:any):void {
-    this.onHourClicked.emit(this.chartData[event.active[0]._index])
+    if( typeof event !== 'undefined' && typeof event.active !== 'undefined' && typeof event.active[0] !== 'undefined' )
+      this.onHourClicked.emit(this.chartData[event.active[0]._index])
   }
 
 
