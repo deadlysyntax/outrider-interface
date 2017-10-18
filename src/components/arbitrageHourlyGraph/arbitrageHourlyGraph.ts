@@ -73,10 +73,10 @@ export class ArbitrageHourlyGraph implements OnChanges, OnDestroy {
       ]
       // Chart Labels
       this.hourlyLineChartLabels = this.hourlyChartData.map( result => {
-        return result.time
+        return moment(result.time).tz('Australia/Melbourne').format('HH:mm:ssa')
       })
       this.displayHourlyGraph = true
-      this.hourToDisplay      = moment(data.time, 'YYYY-MM-DD HH').tz('Australia/Melbourne').format('HH:00a DD/MM/YYYY')
+      this.hourToDisplay      = moment(data.time).tz('Australia/Melbourne').format('HH:00a DD/MM/YYYY')
       this.ref.detectChanges()
     })
   }
@@ -84,8 +84,9 @@ export class ArbitrageHourlyGraph implements OnChanges, OnDestroy {
 
 
   singleOpportunityClicked( event:any ):void {
-    if( typeof event !== 'undefined' && typeof event.active !== 'undefined' && typeof event.active[0] !== 'undefined' )
+    if( typeof event !== 'undefined' && typeof event.active !== 'undefined' && typeof event.active[0] !== 'undefined' ){
       this.onOpportunityClicked.emit(this.hourlyChartData[event.active[0]._index])
+    }
   }
 
 

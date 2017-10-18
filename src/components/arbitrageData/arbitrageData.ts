@@ -37,8 +37,8 @@ export class ArbitrageData implements OnInit, OnDestroy {
   getData(){
     this.subscription = this.engineAPI.getLatest().subscribe( response => {
       this.latest = {
-        timestamp: moment(response[0].timestamp, 'YYYY-MM-DD H:mm:ss').tz('Australia/Melbourne').format('HH:mm:ss DD/MM/YYYY'),
-        data:      JSON.parse(response[0].data)
+        timestamp: moment(Math.floor(response[0].timestamp)).tz('Australia/Melbourne').format('HH:mm:ss DD/MM/YYYY'),
+        data:      response[0]
       }
       this.ref.detectChanges()
     })

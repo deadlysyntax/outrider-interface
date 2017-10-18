@@ -40,7 +40,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   selectSingleOpportunity( event: any ): void {
     this.singleOpportunity = {
-      timestamp: moment(event.time, 'YYYY-MM-DD H:mm:ss').tz('Australia/Melbourne').format('HH:mm:ss DD/MM/YYYY'),
+      timestamp: moment(event.time).tz('Australia/Melbourne').format('HH:mm:ss DD/MM/YYYY'),
       data:     event.data[0]
     }
     this.ref.detectChanges()
