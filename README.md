@@ -1,26 +1,19 @@
-This is a starter template for [Ionic](http://ionicframework.com/docs/) projects.
+# Outrider Interface
+This Ionic/Angular2 app provides an interface to the Outrider Engine API.
 
-## How to use this template
+It provides visualization for the data our bot extracts from the exchanges and data about the trades opportunities.
 
-*This template does not work on its own*. The shared files for each starter are found in the [ionic2-app-base repo](https://github.com/ionic-team/ionic2-app-base).
+***
+### Installation
+First install Ionic globally `sudo npm install -g ionic cordova`.
 
-To use this template, either create a new ionic project using the ionic node.js utility, or copy the files from this repository into the [Starter App Base](https://github.com/ionic-team/ionic2-app-base).
+Then clone the interface repo `git@github.com:deadlysyntax/outrider-interface.git`.
 
-### With the Ionic CLI:
+Then move into the interface directory `cd outrider-interface`.
 
-Take the name after `ionic2-starter-`, and that is the name of the template to be used when using the `ionic start` command below:
+Then, from the serve the interface `ionic serve`.
 
-```bash
-$ sudo npm install -g ionic cordova
-$ ionic start mySideMenu sidemenu
-```
+This will launch the interface in your web-browser on `localhost` port `8100`. It expects the [Outrider Engine API](https://github.com/deadlysyntax/outrider-engine) to be up and running on `localhost` port `9999`.
 
-Then, to run it, cd into `mySideMenu` and run:
-
-```bash
-$ ionic cordova platform add ios
-$ ionic cordova run ios
-```
-
-Substitute ios for android if not on a Mac.
-
+***
+Cryptocurrency trading is not for noobs. Please do your own research and understand what Cryptocurrency Arbitrage is before using this software. You use Outrider at your own risk. We take no responsibility for how this software is used or the results that come from using it.
